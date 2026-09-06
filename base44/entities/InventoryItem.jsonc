@@ -1,0 +1,106 @@
+{
+  "name": "InventoryItem",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "quantity": {
+      "type": "number",
+      "default": 0
+    },
+    "minimum_level": {
+      "type": "number",
+      "default": 10
+    },
+    "unit": {
+      "type": "string",
+      "default": "items"
+    },
+    "preferred_donor_id": {
+      "type": "string"
+    },
+    "last_updated_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "volunteer"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "volunteer"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "volunteer"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "name": "GrantDocument",
+  "type": "object",
+  "properties": {
+    "grantId": {
+      "type": "string"
+    },
+    "requirementId": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Optional compliance requirement this evidence belongs to."
+    },
+    "filename": {
+      "type": "string"
+    },
+    "fileUrl": {
+      "type": "string",
+      "description": "Storage reference returned by the platform upload."
+    },
+    "fileType": {
+      "type": "string"
+    },
+    "fileSize": {
+      "type": "number"
+    },
+    "documentCategory": {
+      "type": "string",
+      "enum": [
+        "Funding Agreement",
+        "Original Application",
+        "Budget",
+        "Progress Report",
+        "Financial Report",
+        "Acquittal Report",
+        "Receipts / Expenditure Evidence",
+        "Outcome Report",
+        "Other"
+      ],
+      "default": "Other"
+    },
+    "uploadedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "uploadedBy": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "grantId",
+    "filename",
+    "fileUrl"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    }
+  }
+}

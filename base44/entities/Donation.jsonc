@@ -1,0 +1,123 @@
+{
+  "name": "Donation",
+  "type": "object",
+  "properties": {
+    "donor": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Donor record ID. Null only when is_anonymous is true."
+    },
+    "is_anonymous": {
+      "type": "boolean",
+      "default": false
+    },
+    "date_received": {
+      "type": "string",
+      "format": "date",
+      "description": "Business date; defaults to today in the submission path and remains admin-editable."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "readOnly": true,
+      "description": "System-set creation timestamp."
+    },
+    "donation_type": {
+      "type": "string",
+      "enum": [
+        "in_kind"
+      ],
+      "default": "in_kind"
+    },
+    "logged_by": {
+      "type": "string",
+      "description": "User record ID."
+    },
+    "storage_location": {
+      "type": "string",
+      "description": "StorageLocation record ID."
+    },
+    "idempotency_key": {
+      "type": "string",
+      "unique": true
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "submitted",
+        "flagged_incomplete",
+        "verified",
+        "discarded",
+        "voided"
+      ],
+      "default": "draft"
+    }
+  },
+  "required": [
+    "is_anonymous",
+    "date_received",
+    "donation_type",
+    "logged_by",
+    "storage_location",
+    "idempotency_key",
+    "status"
+  ],
+  "indexes": [
+    {
+      "fields": [
+        "donor",
+        "created_at"
+      ]
+    }
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "volunteer"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "volunteer"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

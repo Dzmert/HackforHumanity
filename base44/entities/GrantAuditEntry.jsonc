@@ -1,0 +1,66 @@
+{
+  "name": "GrantAuditEntry",
+  "type": "object",
+  "properties": {
+    "grantId": {
+      "type": "string"
+    },
+    "actorName": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string",
+      "description": "e.g. changed Acquittal Due Date"
+    },
+    "previousValue": {
+      "type": "string"
+    },
+    "newValue": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "grantId",
+    "summary"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

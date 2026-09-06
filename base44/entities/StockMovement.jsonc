@@ -1,0 +1,119 @@
+{
+  "name": "StockMovement",
+  "type": "object",
+  "description": "Append-only stock ledger and audit log. Corrections are recorded as new offsetting movements.",
+  "properties": {
+    "supply_item": {
+      "type": "string",
+      "description": "SupplyItem record ID."
+    },
+    "batch": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Batch record ID, when applicable."
+    },
+    "storage_location": {
+      "type": "string",
+      "description": "StorageLocation record ID."
+    },
+    "quantity_delta": {
+      "type": "number",
+      "description": "Signed quantity in the supply item's canonical base unit."
+    },
+    "movement_type": {
+      "type": "string",
+      "enum": [
+        "intake",
+        "adjustment",
+        "write_off",
+        "count_correction",
+        "void_reversal"
+      ]
+    },
+    "source_donation_line": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "DonationLineItem record ID for intake or reversal provenance."
+    },
+    "source_merge_reference": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Concrete merge reference record ID when the movement records a merge-related correction."
+    },
+    "user": {
+      "type": "string",
+      "description": "User record ID responsible for the movement."
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "supply_item",
+    "storage_location",
+    "quantity_delta",
+    "movement_type",
+    "user",
+    "timestamp"
+  ],
+  "indexes": [
+    {
+      "fields": [
+        "supply_item",
+        "timestamp"
+      ]
+    },
+    {
+      "fields": [
+        "timestamp"
+      ]
+    }
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "volunteer"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "volunteer"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_condition": {
+        "role": "stock_movement_rows_are_immutable"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "stock_movement_rows_are_immutable"
+      }
+    }
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "name": "StandbyAvailability",
+  "type": "object",
+  "properties": {
+    "volunteer_id": {
+      "type": "string",
+      "description": "User id of the volunteer who opted in to standby"
+    },
+    "volunteer_name": {
+      "type": "string"
+    },
+    "day_of_week": {
+      "type": "number",
+      "description": "0 = Sunday through 6 = Saturday"
+    },
+    "part_of_day": {
+      "type": "string",
+      "enum": [
+        "morning",
+        "afternoon",
+        "any"
+      ],
+      "default": "any"
+    }
+  },
+  "required": [
+    "volunteer_id",
+    "day_of_week"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.volunteer_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "create": {
+      "data.volunteer_id": "{{user.id}}"
+    },
+    "update": {
+      "$or": [
+        {
+          "data.volunteer_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "data.volunteer_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

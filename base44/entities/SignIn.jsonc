@@ -1,0 +1,146 @@
+{
+  "name": "SignIn",
+  "type": "object",
+  "description": "A woman signing in at the door. Triage only: the specialisation on this record is a preliminary guess from her own words, never a diagnosis or a decision.",
+  "properties": {
+    "client_name": {
+      "type": "string",
+      "description": "The name or reference code she gave at the door, as she gave it."
+    },
+    "client_reference": {
+      "type": "string",
+      "description": "Reference code, when she is already known to us."
+    },
+    "client_id": {
+      "type": "string",
+      "description": "Client record this sign-in is linked to, existing or newly created placeholder."
+    },
+    "is_placeholder_client": {
+      "type": "boolean",
+      "default": false,
+      "description": "True when no profile matched and a placeholder was created for her, to be completed by a caseworker."
+    },
+    "sign_in_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reason_for_visit": {
+      "type": "string",
+      "description": "Short free text, in her words where possible."
+    },
+    "inferred_specialisation": {
+      "type": "string",
+      "enum": [
+        "Domestic & Family Violence",
+        "Housing",
+        "Always Mum",
+        "General"
+      ],
+      "description": "PRELIMINARY GUESS pending confirmation by a caseworker. Never treated as confirmed, and never written onto a case note."
+    },
+    "inference_basis": {
+      "type": "string",
+      "description": "The words in her reason for visit the guess was drawn from."
+    },
+    "inference_status": {
+      "type": "string",
+      "enum": [
+        "Preliminary guess",
+        "Confirmed",
+        "Corrected"
+      ],
+      "default": "Preliminary guess"
+    },
+    "confirmed_specialisation": {
+      "type": "string",
+      "description": "What the caseworker confirmed after speaking with her."
+    },
+    "assigned_caseworker_id": {
+      "type": "string",
+      "description": "Caseworker on shift at sign-in time, read from the roster."
+    },
+    "assigned_caseworker_name": {
+      "type": "string"
+    },
+    "assigned_caseworker_specialisation": {
+      "type": "string"
+    },
+    "specialisation_mismatch": {
+      "type": "boolean",
+      "default": false,
+      "description": "True when the guessed area differs from the on-shift caseworker's specialisation, so the coverage checklist is surfaced to her."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "waiting",
+        "seen"
+      ],
+      "default": "waiting"
+    }
+  },
+  "required": [
+    "client_name",
+    "sign_in_time",
+    "reason_for_visit"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "project_services_manager"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "volunteer"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "name": "GrantRequirement",
+  "type": "object",
+  "properties": {
+    "grant_id": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "not_started",
+        "in_progress",
+        "complete"
+      ],
+      "default": "not_started"
+    },
+    "evidence_notes": {
+      "type": "string"
+    },
+    "grantId": {
+      "type": "string",
+      "description": "Canonical parent grant id"
+    },
+    "description": {
+      "type": "string"
+    },
+    "requirementType": {
+      "type": "string"
+    },
+    "dueDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "personResponsible": {
+      "type": "string"
+    },
+    "personResponsibleEmail": {
+      "type": "string"
+    },
+    "requirementStatus": {
+      "type": "string",
+      "enum": [
+        "Not started",
+        "In progress",
+        "Completed"
+      ],
+      "default": "Not started",
+      "description": "Stored status. Overdue is derived at read time from dueDate."
+    },
+    "completionDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "createdBy": {
+      "type": "string"
+    },
+    "updatedBy": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "grant_id",
+    "title",
+    "due_date"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "name": "SupplyItemAlternateUnit",
+  "type": "object",
+  "properties": {
+    "supply_item": {
+      "type": "string",
+      "description": "SupplyItem record ID."
+    },
+    "unit_name": {
+      "type": "string"
+    },
+    "conversion_factor": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "description": "Multiplier from this unit to the supply item's canonical unit."
+    }
+  },
+  "required": [
+    "supply_item",
+    "unit_name",
+    "conversion_factor"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "volunteer"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

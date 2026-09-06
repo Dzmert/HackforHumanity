@@ -1,0 +1,71 @@
+{
+  "name": "Batch",
+  "type": "object",
+  "description": "Created during donation submission only, never during item selection.",
+  "properties": {
+    "supply_item": {
+      "type": "string",
+      "description": "SupplyItem record ID."
+    },
+    "expiry_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date"
+    },
+    "received_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "source_donation": {
+      "type": "string",
+      "description": "Donation record ID."
+    }
+  },
+  "required": [
+    "supply_item",
+    "received_date",
+    "source_donation"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "volunteer"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "volunteer"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

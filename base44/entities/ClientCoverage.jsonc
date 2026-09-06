@@ -1,0 +1,102 @@
+{
+  "name": "ClientCoverage",
+  "type": "object",
+  "description": "Client-level checklist coverage. One record per client + specialisation + checklist item, accumulating across visits and across caseworkers. Never reset per note.",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "specialisation": {
+      "type": "string",
+      "enum": [
+        "Domestic & Family Violence",
+        "Housing",
+        "Always Mum"
+      ]
+    },
+    "item_key": {
+      "type": "string"
+    },
+    "item_label": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Covered",
+        "Not yet covered"
+      ],
+      "default": "Not yet covered"
+    },
+    "covered_date": {
+      "type": "string",
+      "description": "Note date of the visit that first established this element."
+    },
+    "covered_by_name": {
+      "type": "string"
+    },
+    "source_case_note_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "client_id",
+    "specialisation",
+    "item_key",
+    "item_label"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "project_services_manager"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

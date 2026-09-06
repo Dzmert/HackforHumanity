@@ -1,0 +1,89 @@
+{
+  "name": "GrantReminderSettings",
+  "type": "object",
+  "description": "Single settings record controlling grant deadline reminders.",
+  "properties": {
+    "reminderIntervals": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "default": [
+        7,
+        5,
+        3,
+        1
+      ],
+      "description": "Whole days before a deadline when a reminder is sent."
+    },
+    "emailRemindersEnabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "deviceNotificationsEnabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "ccEmails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Addresses copied on every reminder email."
+    },
+    "updatedBy": {
+      "type": "string"
+    }
+  },
+  "required": [],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

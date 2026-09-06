@@ -1,0 +1,165 @@
+{
+  "name": "Grant",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "funder": {
+      "type": "string"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "pending",
+        "closed"
+      ],
+      "default": "active"
+    },
+    "renewal_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "owner": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "grantName": {
+      "type": "string",
+      "description": "Canonical grant name"
+    },
+    "funderName": {
+      "type": "string"
+    },
+    "grantAmount": {
+      "type": "number"
+    },
+    "grantType": {
+      "type": "string"
+    },
+    "grantStatus": {
+      "type": "string",
+      "enum": [
+        "Potential",
+        "Preparing",
+        "Submitted",
+        "Successful",
+        "Active",
+        "Acquittal Due",
+        "Completed",
+        "Unsuccessful",
+        "Withdrawn"
+      ],
+      "default": "Potential"
+    },
+    "applicationDueDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "fundingStartDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "fundingEndDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "acquittalType": {
+      "type": "string"
+    },
+    "acquittalDueDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "renewalDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "grantWebsite": {
+      "type": "string"
+    },
+    "grantReferenceNumber": {
+      "type": "string"
+    },
+    "personInCharge": {
+      "type": "string"
+    },
+    "personInChargeEmail": {
+      "type": "string"
+    },
+    "grantPurpose": {
+      "type": "string"
+    },
+    "additionalNotes": {
+      "type": "string"
+    },
+    "createdBy": {
+      "type": "string",
+      "description": "Email of the caseworker who created the record"
+    },
+    "updatedBy": {
+      "type": "string",
+      "description": "Email of the caseworker who last updated the record"
+    }
+  },
+  "required": [
+    "name",
+    "funder",
+    "renewal_date"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

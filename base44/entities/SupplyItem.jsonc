@@ -1,0 +1,84 @@
+{
+  "name": "SupplyItem",
+  "type": "object",
+  "properties": {
+    "item_name": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "canonical_unit_of_measure": {
+      "type": "string"
+    },
+    "standard_unit_value": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Admin-maintained value per canonical unit."
+    },
+    "is_perishable": {
+      "type": "boolean",
+      "default": false
+    },
+    "shelf_life_days": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "description": "Shelf life duration only; expiry dates belong to Batch."
+    },
+    "verification_status": {
+      "type": "string",
+      "enum": [
+        "unverified",
+        "verified"
+      ],
+      "default": "unverified"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "reorder_threshold": {
+      "type": "number",
+      "minimum": 0
+    }
+  },
+  "required": [
+    "item_name",
+    "category",
+    "canonical_unit_of_measure"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "volunteer"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

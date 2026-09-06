@@ -1,0 +1,35 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "enum": [
+        "admin",
+        "caseworker",
+        "volunteer",
+        "project_services_manager"
+      ],
+      "default": "volunteer"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "availability_notes": {
+      "type": "string"
+    },
+    "specialisation": {
+      "type": "string",
+      "enum": [
+        "Domestic & Family Violence",
+        "Housing",
+        "Always Mum"
+      ],
+      "description": "A paid caseworker's area of specialisation, set by an admin. Deliberately not tied to named individuals so it survives staff changes. Left unset for volunteers and for staff with no single specialisation."
+    }
+  },
+  "required": [
+    "phone",
+    "availability_notes"
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "name": "DonationLineItem",
+  "type": "object",
+  "description": "The effective supply item is merged_into when set, otherwise supply_item. supply_item is immutable provenance and is never repointed.",
+  "properties": {
+    "donation": {
+      "type": "string",
+      "description": "Donation record ID."
+    },
+    "supply_item": {
+      "type": "string",
+      "description": "Original SupplyItem record ID; never repointed."
+    },
+    "batch": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Batch record ID. Required by the submission path when the effective supply item is perishable."
+    },
+    "entered_quantity": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "entered_unit": {
+      "type": "string"
+    },
+    "conversion_factor": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "canonical_quantity": {
+      "type": "number",
+      "readOnly": true,
+      "description": "Computed as entered_quantity multiplied by conversion_factor."
+    },
+    "estimated_value": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Computed from canonical quantity and the effective supply item's standard unit value unless is_value_overridden is true."
+    },
+    "is_value_overridden": {
+      "type": "boolean",
+      "default": false
+    },
+    "merged_into": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Replacement SupplyItem record ID. When set, this is the effective supply item; supply_item remains unchanged."
+    },
+    "condition": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "donation",
+    "supply_item",
+    "entered_quantity",
+    "entered_unit",
+    "conversion_factor",
+    "condition"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "volunteer"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "volunteer"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "name": "GrantReminderDelivery",
+  "type": "object",
+  "description": "Append-only record of reminders already delivered, used to prevent duplicates.",
+  "properties": {
+    "grantId": {
+      "type": "string"
+    },
+    "requirementId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "deadlineType": {
+      "type": "string",
+      "enum": [
+        "Application Due Date",
+        "Acquittal Due Date",
+        "Renewal Date",
+        "Compliance Requirement Due Date"
+      ]
+    },
+    "deadlineDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "reminderInterval": {
+      "type": "number"
+    },
+    "recipient": {
+      "type": "string"
+    },
+    "deliveryType": {
+      "type": "string",
+      "enum": [
+        "email",
+        "device",
+        "mock"
+      ],
+      "default": "email"
+    },
+    "reminderKey": {
+      "type": "string",
+      "description": "Deterministic dedupe key for this exact reminder."
+    },
+    "sentAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "sent",
+        "failed"
+      ],
+      "default": "sent"
+    },
+    "failureReason": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "grantId",
+    "deadlineType",
+    "deadlineDate",
+    "reminderInterval",
+    "recipient",
+    "reminderKey"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -1,0 +1,148 @@
+{
+  "name": "Donor",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "organisation": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "preferred_items": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "last_contacted": {
+      "type": "string",
+      "format": "date"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "donor_type": {
+      "type": "string",
+      "enum": [
+        "individual",
+        "corporate",
+        "organization"
+      ]
+    },
+    "verification_status": {
+      "type": "string",
+      "enum": [
+        "unverified",
+        "verified"
+      ],
+      "default": "unverified"
+    },
+    "total_estimated_value_in_kind": {
+      "type": "number",
+      "readOnly": true,
+      "description": "Derived from non-voided, non-discarded in-kind donations."
+    },
+    "in_kind_donation_count": {
+      "type": "number",
+      "readOnly": true,
+      "description": "Derived from non-voided, non-discarded in-kind donations."
+    },
+    "last_donation_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "readOnly": true,
+      "description": "Derived from non-voided, non-discarded donations."
+    },
+    "total_donation_count": {
+      "type": "number",
+      "readOnly": true,
+      "description": "Derived from non-voided, non-discarded donations."
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "volunteer"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "volunteer"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "volunteer"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "name": "ActivityLog",
+  "type": "object",
+  "description": "Append-only record of review actions, so it is always clear who looked at what and when.",
+  "properties": {
+    "module": {
+      "type": "string",
+      "enum": [
+        "documentation",
+        "signin",
+        "grants",
+        "roster",
+        "supply"
+      ]
+    },
+    "action": {
+      "type": "string",
+      "description": "e.g. 'psm_confirmed_note', 'psm_flagged_note'."
+    },
+    "subject_type": {
+      "type": "string"
+    },
+    "subject_id": {
+      "type": "string"
+    },
+    "actor_id": {
+      "type": "string"
+    },
+    "actor_name": {
+      "type": "string"
+    },
+    "detail": {
+      "type": "string"
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "module",
+    "action",
+    "occurred_at"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "project_services_manager"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "project_services_manager"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_condition": {
+        "role": "activity_log_rows_are_immutable"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "activity_log_rows_are_immutable"
+      }
+    }
+  }
+}

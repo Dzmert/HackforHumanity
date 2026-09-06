@@ -1,0 +1,119 @@
+{
+  "name": "Shift",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "start_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "end_time": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "assigned_volunteer_id": {
+      "type": "string"
+    },
+    "assigned_volunteer_name": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "assigned",
+        "open",
+        "completed"
+      ],
+      "default": "open"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "standby_notified_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Set when a covered shift was released and standby volunteers are being reached out to. Cleared when someone claims it."
+    },
+    "previous_volunteer_name": {
+      "type": "string",
+      "description": "Who was covering the shift before it was released"
+    }
+  },
+  "required": [
+    "title",
+    "start_time",
+    "end_time"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.status": "open"
+        },
+        {
+          "data.assigned_volunteer_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.status": "open"
+        },
+        {
+          "data.assigned_volunteer_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    }
+  }
+}

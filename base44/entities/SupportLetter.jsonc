@@ -1,0 +1,122 @@
+{
+  "name": "SupportLetter",
+  "type": "object",
+  "properties": {
+    "client_reference": {
+      "type": "string"
+    },
+    "letter_type": {
+      "type": "string",
+      "enum": [
+        "housing",
+        "domestic_violence",
+        "financial",
+        "general"
+      ]
+    },
+    "recipient": {
+      "type": "string"
+    },
+    "recipient_type": {
+      "type": "string",
+      "enum": [
+        "DCJ Housing",
+        "Refuge/Accommodation Service",
+        "Medical Provider/General Referral"
+      ],
+      "description": "Drives which supporting documents are seeded onto the letter's checklist."
+    },
+    "subject": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string"
+    },
+    "source_case_note_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "reviewed",
+        "final"
+      ],
+      "default": "draft"
+    }
+  },
+  "required": [
+    "client_reference",
+    "letter_type",
+    "body"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "volunteer"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "volunteer"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "name": "PushSubscription",
+  "type": "object",
+  "description": "Browser Web Push subscription used to deliver grant deadline reminders to a device.",
+  "properties": {
+    "endpoint": {
+      "type": "string",
+      "description": "Push service endpoint URL; unique per browser install."
+    },
+    "p256dh": {
+      "type": "string",
+      "description": "Client public key from the subscription keys."
+    },
+    "auth": {
+      "type": "string",
+      "description": "Client auth secret from the subscription keys."
+    },
+    "userEmail": {
+      "type": "string"
+    },
+    "userAgent": {
+      "type": "string"
+    },
+    "lastSeen": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "endpoint",
+    "p256dh",
+    "auth"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    }
+  }
+}

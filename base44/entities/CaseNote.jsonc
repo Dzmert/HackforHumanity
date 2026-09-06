@@ -1,0 +1,316 @@
+{
+  "name": "CaseNote",
+  "type": "object",
+  "properties": {
+    "client_reference": {
+      "type": "string"
+    },
+    "client_id": {
+      "type": "string",
+      "description": "Client record ID this note belongs to."
+    },
+    "client_name": {
+      "type": "string",
+      "description": "Client name captured at entry time for display."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "complete"
+      ],
+      "default": "draft",
+      "description": "Only 'complete' notes are visible to gap-checks and letter generation."
+    },
+    "case_tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "Housing",
+          "Domestic & Family Violence",
+          "Always Mum",
+          "Referral",
+          "General Drop-In"
+        ]
+      },
+      "description": "Inferred from the narrative. 'Always Mum' is its own tag and is never folded into 'General Drop-In'."
+    },
+    "note_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "note": {
+      "type": "string"
+    },
+    "key_needs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "strengths": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "safety_considerations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "next_steps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tenancy_address": {
+      "type": "string",
+      "description": "'Not stated' when the narrative gives no basis."
+    },
+    "tenancy_start_date": {
+      "type": "string",
+      "description": "Free text so it can hold the exact sentinel 'Not stated'."
+    },
+    "risk_of_homelessness": {
+      "type": "string",
+      "description": "Low, Medium, High, or 'Not stated'."
+    },
+    "preferred_relocation_area": {
+      "type": "string"
+    },
+    "bedrooms_needed": {
+      "type": "string"
+    },
+    "number_of_dependent_children": {
+      "type": "string"
+    },
+    "childrens_ages": {
+      "type": "string"
+    },
+    "extraction_sources": {
+      "type": "object",
+      "description": "Per-field verbatim narrative sentences the extracted value was derived from, keyed by field name."
+    },
+    "visibility": {
+      "type": "string",
+      "enum": [
+        "Standard",
+        "Sensitive"
+      ],
+      "default": "Standard"
+    },
+    "safety_risk_level": {
+      "type": "string",
+      "enum": [
+        "Low",
+        "Medium",
+        "High"
+      ],
+      "rls": {
+        "read": {
+          "$or": [
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "caseworker"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "project_services_manager"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "avo_status": {
+      "type": "string",
+      "enum": [
+        "None",
+        "Interim",
+        "Final"
+      ],
+      "rls": {
+        "read": {
+          "$or": [
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "caseworker"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "project_services_manager"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "perpetrator_occupancy_status": {
+      "type": "string",
+      "enum": [
+        "Still at shared address",
+        "Removed",
+        "Unknown"
+      ],
+      "rls": {
+        "read": {
+          "$or": [
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "caseworker"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "project_services_manager"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "relationship_to_perpetrator": {
+      "type": "string",
+      "rls": {
+        "read": {
+          "$or": [
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "caseworker"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "project_services_manager"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "current_temporary_accommodation": {
+      "type": "string",
+      "rls": {
+        "read": {
+          "$or": [
+            {
+              "user_condition": {
+                "role": "admin"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "caseworker"
+              }
+            },
+            {
+              "user_condition": {
+                "role": "project_services_manager"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "required": [
+    "client_reference",
+    "note_date",
+    "note"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "volunteer"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "volunteer"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "caseworker"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}
