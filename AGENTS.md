@@ -24,6 +24,24 @@ npx skills add base44/skills
 - `vite.config.js`: Vite config and Base44 Vite plugin setup.
 - `.env.local`: local-only environment values; never commit secrets.
 
+## Local Dev Environment (Base44 sandbox)
+
+The app runs via `docker compose -f docker-compose.base44.yml up -d` (web service on host port 3000).
+Key quirks discovered during setup:
+
+- **`base44 dev` rejects `BASE44_APP_ID`.** The app id must come only from `base44/.app.jsonc`
+  (gitignored). `.base44/dev-entrypoint.sh` writes that file from the `BASE44_APP_ID` secret,
+  then `unset BASE44_APP_ID` before exec'ing `base44 dev`.
+- **Auth.** `base44 dev` requires Base44 auth. Either set `BASE44_API_KEY` to a `b44k_`-prefixed
+  workspace API key (non-interactive; dashboard → Workspace Settings → API keys), OR complete the
+  one-time device-code login printed in the container logs. Login state persists in the named
+  `base44-auth` volume (`/root/.base44`), so the device-code login survives restarts/recreations.
+  A `BASE44_API_KEY` value without the `b44k_` prefix is silently ignored and triggers the
+  device-code flow.
+- **Vite host.** `vite.config.js` sets `server.host: true` and `allowedHosts: true` so the preview's
+  external hostname is accepted (Vite otherwise blocks it as an unknown host).
+- After editing `vite.config.js` or compose, restart the web service and `reload_preview`.
+
 ## Working Notes
 
 - Use `base44 dev` as the default local development command when you need the local Base44 backend. It can run the backend and frontend together.
