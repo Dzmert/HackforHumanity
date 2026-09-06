@@ -25,22 +25,26 @@ export default async function(req: Request): Promise<Response> {
     const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
       prompt: `You are reading a scanned or photographed donation form for Lou's Place, a support service.
 
-Extract only what is actually written on the form. Never invent a donor, an item, or a number. If a field is blank, unreadable, or missing, leave it empty (or null for numbers) and add a short note in "warnings" describing what could not be read.
+Extract only what is actually written on the form. Never invent a donor, an item, or a number. If a field is blank, unreadable, or missing, leave text fields empty and use 0 for numbers, then add a short note in "warnings" describing what could not be read.
 
-For each donated item, read its name, the quantity, and the unit of measure (for example items, kg, packs, boxes, litres). If no unit is written, use "items". If a quantity is written as a word ("three"), convert it to a number. If a quantity is unreadable, set quantity to null and add a warning.
+For each donated item, read its name, the quantity, and the unit of measure (for example items, kg, packs, boxes, litres). If no unit is written, use "items". If a quantity is written as a word ("three"), convert it to a number. If a quantity is blank or unreadable, set quantity to 0 and add a warning so a person fills it in.
 
 Match each item to one of these existing stock names when it clearly refers to the same thing, and return that exact existing name in "matched_stock_name". If there is no clear match, leave "matched_stock_name" empty so a new stock item can be created.
 Existing stock names: ${knownNames.length ? knownNames.join(', ') : '(none yet)'}
 
-Also read the donor's name and email address, the date on the form, and any monetary (cash) amount donated. A monetary amount is money only, never a count of goods.`,
+Also read the donor's name and email address, the date on the form, and any monetary (cash) amount donated. A monetary amount is money only, never a count of goods. Use 0 when no cash amount is written.`,
       file_urls: [fileUrl],
+      // Every field is a plain scalar type. Nullable unions (["number", "null"]) are not
+      // carried through the structured-output pipeline, so unreadable numbers come back
+      // as 0 and are flagged in "warnings" instead, the same way the case note analysis
+      // uses a "Not stated" sentinel rather than a null.
       response_json_schema: {
         type: 'object',
         properties: {
           donor_name: { type: 'string', description: 'Donor name exactly as written, or empty if not readable.' },
           donor_email: { type: 'string', description: 'Donor email exactly as written, or empty if not readable.' },
           donation_date: { type: 'string', description: 'Date on the form in YYYY-MM-DD if determinable, otherwise empty.' },
-          monetary_amount: { type: ['number', 'null'], description: 'Cash amount donated, or null if none written.' },
+          monetary_amount: { type: 'number', description: 'Cash amount donated, or 0 if no money was donated.' },
           items: {
             type: 'array',
             items: {
@@ -48,7 +52,7 @@ Also read the donor's name and email address, the date on the form, and any mone
               properties: {
                 name: { type: 'string', description: 'Item name as written on the form.' },
                 matched_stock_name: { type: 'string', description: 'Exact existing stock name this refers to, or empty when there is no clear match.' },
-                quantity: { type: ['number', 'null'], description: 'Quantity donated, or null if unreadable.' },
+                quantity: { type: 'number', description: 'Quantity donated, or 0 if it is blank or unreadable.' },
                 unit: { type: 'string', description: 'Unit of measure, defaulting to "items".' }
               },
               required: ['name', 'matched_stock_name', 'quantity', 'unit']

@@ -4,6 +4,11 @@ import { ScanLine, Upload, Loader2, AlertTriangle, Check, X } from 'lucide-react
 
 const emptyDraft = { donor_name: '', donor_email: '', donation_date: '', monetary_amount: null, items: [], warnings: [] };
 
+// The SDK throws on a non-2xx response, and the readable reason the function returned
+// sits on the response body rather than on error.message — without this the volunteer
+// only ever sees "Request failed with status code 500".
+const readableError = (error, fallback) => error?.response?.data?.error || error?.message || fallback;
+
 /**
  * Reads a scanned/photographed donation form with AI, then lets a volunteer correct the
  * extracted values before they are applied to stock. Nothing is written to InventoryItem
@@ -36,13 +41,16 @@ export default function DonationFormScanner({ items, donors, refresh }) {
           // to the right record rather than creating a duplicate.
           stockId: items.find(existing => existing.name === item.matched_stock_name)?.id || '',
           name: item.name || '',
-          quantity: item.quantity ?? '',
+          // The function returns 0 for a quantity it could not read, so show an empty
+          // box the volunteer has to fill in rather than a misleading zero.
+          quantity: Number(item.quantity) > 0 ? item.quantity : '',
           unit: item.unit || 'items'
         }))
       });
       setStage('review');
     } catch (submitError) {
-      setError(submitError.message || 'The form could not be read. Try a clearer photo or enter the donation manually.');
+      console.error('[DonationFormScanner] extractDonationForm failed:', submitError?.response?.data || submitError);
+      setError(readableError(submitError, 'The form could not be read. Try a clearer photo or enter the donation manually.'));
       setStage('idle');
     }
   };
@@ -88,7 +96,8 @@ export default function DonationFormScanner({ items, donors, refresh }) {
       reset();
       refresh();
     } catch (saveError) {
-      setError(saveError.message || 'The stock could not be updated. Please check the values and try again.');
+      console.error('[DonationFormScanner] stock update failed:', saveError?.response?.data || saveError);
+      setError(readableError(saveError, 'The stock could not be updated. Please check the values and try again.'));
       setStage('review');
     }
   };
@@ -144,7 +153,7 @@ export default function DonationFormScanner({ items, donors, refresh }) {
             </label>
           </div>
 
-          {draft.monetary_amount != null && draft.monetary_amount !== '' && (
+          {Number(draft.monetary_amount) > 0 && (
             <p className="rounded-xl bg-[#FBF7F3] p-3 text-sm text-[#756760]">
               A monetary donation of <b>${Number(draft.monetary_amount).toFixed(2)}</b> was read from this form. Money is recorded separately from stock, so it is shown here for your records only.
             </p>
