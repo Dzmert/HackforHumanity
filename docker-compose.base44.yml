@@ -1,0 +1,24 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.base44
+    working_dir: /app
+    volumes:
+      # Bind-mount the cloned source so edits hot-reload without image rebuilds.
+      - .:/app
+      # Anonymous volume keeps node_modules (installed at startup) out of the host bind mount.
+      - /app/node_modules
+    ports:
+      # Vite dev server (plugin binds 0.0.0.0:5173 with allowedHosts: true).
+      - "3000:5173"
+    environment:
+      # Non-secret runtime config only — user secrets come via env_file below.
+      - BASE44_DISABLE_TELEMETRY=true
+    env_file:
+      # Placeholders first (lowest precedence).
+      - ./.base44/env.defaults
+      # Platform-managed secrets last (highest precedence) — BASE44_API_KEY, BASE44_APP_ID.
+      - /run/base44/app.env
+    command: ["sh", "/app/.base44/dev-entrypoint.sh"]
+    restart: unless-stopped
