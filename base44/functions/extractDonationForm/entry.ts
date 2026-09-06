@@ -3,7 +3,10 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
 export default async function(req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
+    const user = await base44.auth.me().catch(authError => {
+      console.error('[extractDonationForm] auth.me() failed:', authError.message);
+      throw authError;
+    });
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { fileUrl } = await req.json();
@@ -13,7 +16,10 @@ export default async function(req: Request): Promise<Response> {
 
     // Give the model the existing stock names so it can match items to what we already track
     // instead of inventing near-duplicate names ("tinned beans" vs "Tinned Beans").
-    const existingItems = await base44.asServiceRole.entities.InventoryItem.list('-created_date', 200);
+    const existingItems = await base44.asServiceRole.entities.InventoryItem.list('-created_date', 200).catch(listError => {
+      console.error('[extractDonationForm] InventoryItem.list() failed:', listError.message);
+      throw listError;
+    });
     const knownNames = existingItems.map(item => item.name).filter(Boolean);
 
     const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
@@ -60,6 +66,7 @@ Also read the donor's name and email address, the date on the form, and any mone
 
     return Response.json(result);
   } catch (error) {
+    console.error('[extractDonationForm] failed:', error.message);
     return Response.json({ error: error.message }, { status: 500 });
   }
 }
